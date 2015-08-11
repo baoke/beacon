@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+           
+     <context:annotation-config />
+     <context:component-scan base-package="com.buptmap" />
+     
+     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+  	 	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+ 
+     	<property name="url" value="jdbc:mysql://10.103.241.89:3306/ibeacon?useUnicode=true&amp;characterEncoding=utf8"/>
+     	<property name="username" value="root"/>
+     	<property name="password" value="0000"/> 
+     		    <!--
+     	 <property name="url" value="jdbc:mysql://123.57.46.160:3306/ibeacon?useUnicode=true&amp;characterEncoding=utf8"/>
+     	<property name="username" value="root"/>
+     	<property name="password" value="M@pNext2014"/>-->
+     	<!-- BasicDataSource提供了close()方法关闭数据源，所以必须设定destroy-method=”close”属性，  
+            以便Spring容器关闭时，数据源能够正常关闭。除以上必须的数据源属性外，还有一些常用的属性：   
+            defaultAutoCommit：设置从数据源中返回的连接是否采用自动提交机制，默认值为 true；   
+            defaultReadOnly：设置数据源是否仅能执行只读操作，默认值为 false；  
+            maxActive：最大连接数据库连接数，设置为0时，表示没有限制；  
+            maxIdle：最大等待连接中的数量，设置为0时，表示没有限制；   
+            maxWait：最大等待秒数，单位为毫秒， 超过时间会报出错误信息；   
+            validationQuery：用于验证连接是否成功的查询SQL语句，SQL语句必须至少要返回一行数据，如你可以简单地设置为：“select count(*) from user”；   
+            removeAbandoned：是否自我中断，默认是 false;  
+            removeAbandonedTimeout：几秒后数据连接会自动断开，在removeAbandoned为true，提供该值；   
+            logAbandoned：是否记录中断事件，默认为 false. -->  
+              
+        <property name="maxActive" value="100" />  
+        <property name="maxIdle" value="20" />  
+        <property name="maxWait" value="10000" />  
+        <property name="removeAbandoned" value="true" />  
+        <property name="removeAbandonedTimeout" value="60" />  
+        <property name="logAbandoned" value="true" />  
+     	
+	 </bean>
+	 <!-- .LocalSessionFactoryBean -->
+	 <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+     	<property name="dataSource" ref="dataSource"/>
+     	<property name="packagesToScan" value="com.buptmap">
+     	</property>
+     	<property name="annotatedClasses">
+        	<list>
+            	<value>com.buptmap.model.Province</value>
+            	<value>com.buptmap.model.Place</value>
+            	<value>com.buptmap.model.Floor</value>
+            	<value>com.buptmap.model.Spot</value>
+            	<value>com.buptmap.model.Map</value>
+            	<value>com.buptmap.model.Position</value>
+            	<value>com.buptmap.model.ViewFieldLevel</value>
+            	<value>com.buptmap.model.User</value>
+            	<value>com.buptmap.model.KeyTable</value>
+            	<value>com.buptmap.model.Api</value>
+            	<value>com.buptmap.model.Mall</value>
+            	<value>com.buptmap.model.City</value>
+            	<value>com.buptmap.model.Db</value>
+            	<value>com.buptmap.model.Beacon</value>
+            	<value>com.buptmap.model.Patrol</value>
+            	<value>com.buptmap.model.Staff</value>
+            	<value>com.buptmap.model.Loginrecord</value>
+            	<value>com.buptmap.model.Message</value>
+            	<value>com.buptmap.model.Mes_Bea</value>
+            	<value>com.buptmap.model.Minor</value>
+            	<value>com.buptmap.model.Beaconcount</value>
+            	<value>com.buptmap.model.Project</value>
+            	<value>com.buptmap.model.DeviceStatistic</value>
+            	<value>com.buptmap.model.PageStatistic</value>
+            	<value>com.buptmap.model.Vdev_mes_bind</value>
+            	<value>com.buptmap.model.Vdev_staff_bind</value>
+            	<value>com.buptmap.model.Vdevice</value>
+            	<value>com.buptmap.model.Staff_dev</value>
+            	<value>com.buptmap.model.Staff_mes</value>
+            	<value>com.buptmap.model.Staff_dev_statistic</value>
+            	<value>com.buptmap.model.Mes_page_statistic</value>
+            	<value>com.buptmap.model.Mes_dev</value>
+            	
+            </list>
+      	</property>
+    	<property name="hibernateProperties">
+      		
+      		<value>
+        		hibernate.dialect=org.hibernate.dialect.MySQLDialect
+        		hibernate.show_sql=true
+        		hibernate.format_sql=false
+        		hibernate.optimistic-lock=all
+        		hibernate.hbm2ddl.auto=update
+        		hibernate.jdbc.batch_size=50
+        		<!-- hibernate.query.factory_class=org.hibernate.hql.classic.ClassicQueryTranslatorFactory -->
+      		</value>
+      		
+
+    	</property>
+  	 </bean>
+  	 <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+  	 	<property name="sessionFactory" ref="sessionFactory"/>
+  	 </bean>
+  	 <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+   		<property name="sessionFactory" ref="sessionFactory"/>
+     </bean>
+  <!-- <bean id="tDAO" class="com.buptmap.dao.TeacherDAO" />
+	
+  <bean id="tService" class="com.buptmap.service.TeacherService">
+  	<property name="teacherDAO" ref="tDAO" />
+  </bean> -->
+
+  <!-- more bean definitions go here -->
+
+</beans>
