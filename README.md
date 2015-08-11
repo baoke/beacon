@@ -1,8 +1,8 @@
 # beacon
-Based on  SSH(Struts、Spring、Hibernate).
-*struts 2.3.4.1
-*spring 2.5
-*hibernate 3.0
+Based on  SSH(Struts、Spring、Hibernate)
+* struts 2.3.4.1
+* spring 2.5
+* hibernate 3.0
 
 Include:Action layer, Service layer , DAO layer
 * Action Layer
